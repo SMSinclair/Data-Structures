@@ -69,8 +69,3 @@ class LRUCache:
             node = self.head.next
             self.remove(node)
             del self.storage[node.key]
-
-# a = LRUCache()
-
-# a.set(1,2)
-# print(a.get(1))
