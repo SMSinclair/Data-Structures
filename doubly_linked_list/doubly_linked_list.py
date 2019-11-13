@@ -3,8 +3,7 @@ as well as its next node in the List."""
 
 
 class ListNode:
-    def __init__(self, key, value, prev=None, next=None):
-        self.key = key
+    def __init__(self, value, prev=None, next=None):
         self.value = value
         self.prev = prev
         self.next = next
@@ -12,18 +11,18 @@ class ListNode:
     """Wrap the given value in a ListNode and insert it
     after this node. Note that this node could already
     have a next node it is point to."""
-    def insert_after(self, key, value):
+    def insert_after(self, value):
         current_next = self.next
-        self.next = ListNode(key, value, self, current_next)
+        self.next = ListNode(value, self, current_next)
         if current_next:
             current_next.prev = self.next
 
     """Wrap the given value in a ListNode and insert it
     before this node. Note that this node could already
     have a previous node it is point to."""
-    def insert_before(self, key, value):
+    def insert_before(self, value):
         current_prev = self.prev
-        self.prev = ListNode(key, value, current_prev, self)
+        self.prev = ListNode(value, current_prev, self)
         if current_prev:
             current_prev.next = self.prev
 
@@ -52,8 +51,8 @@ class DoublyLinkedList:
     """Wraps the given value in a ListNode and inserts it 
     as the new head of the list. Don't forget to handle 
     the old head node's previous pointer accordingly."""
-    def add_to_head(self, key, value):
-        new_node = ListNode(key, value, None, None)
+    def add_to_head(self, value):
+        new_node = ListNode(value, None, None)
         self.length += 1
         if not self.head and not self.tail:
             self.head = new_node
@@ -75,8 +74,8 @@ class DoublyLinkedList:
     """Wraps the given value in a ListNode and inserts it 
     as the new tail of the list. Don't forget to handle 
     the old tail node's next pointer accordingly."""
-    def add_to_tail(self, key, value):
-        new_node = ListNode(key, value, None, None)
+    def add_to_tail(self, value):
+        new_node = ListNode(value, None, None)
         self.length += 1
         if not self.head and not self.tail:
             self.head = new_node
@@ -138,3 +137,4 @@ class DoublyLinkedList:
             current = current.next
 
         return max_value
+

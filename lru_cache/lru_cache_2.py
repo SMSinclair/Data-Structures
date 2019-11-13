@@ -1,9 +1,4 @@
-class Node:
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-        self.prev = None
-        self.next = None
+from doubly_linked_list import DoublyLinkedList
 
 class LRUCache:
     """
@@ -15,25 +10,9 @@ class LRUCache:
     """
     def __init__(self, limit=10):
         self.limit = limit
-        self.num_nodes = 0
+        self.size = 0
         self.storage = dict()
-        self.head = Node(0,0)
-        self.tail = Node(0,0)
-        self.head.next = self.tail
-        self.tail.prev = self.head
-
-    def remove(self, node):
-        prev = node.prev
-        next = node.next
-        prev.next = next
-        next.prev = prev
-
-    def add(self, node):
-        prev = self.tail.prev
-        prev.next = node
-        self.tail.prev = node
-        node.prev = prev
-        node.next = self.tail
+        self.order = DoublyLinkedList()
         
     """
     Retrieves the value associated with the given key. Also
@@ -45,10 +24,10 @@ class LRUCache:
     def get(self, key):
         if key in self.storage:
             node = self.storage[key]
-            self.remove(node)
-            self.add(node)
-            return node.value
-        return None
+            self.order.move_to_end(node)
+            return node.value[1]
+        else:
+            return None
     """
     Adds the given key-value pair to the cache. The newly-
     added pair should be considered the most-recently used
@@ -61,14 +40,13 @@ class LRUCache:
     """
     def set(self, key, value):
         if key in self.storage:
-            self.remove(self.storage[key])
-            self.num_nodes -= 1
-        node = Node(key, value)
-        self.add(node)
-        self.storage[key] = node
-        self.num_nodes += 1
-        if len(self.storage) > self.limit:
-            node = self.head.next
-            self.remove(node)
-            del self.storage[node.key]
-
+            node = self.storage[key]
+            node.value = (key, value)
+            self.order.move_to_end(node)
+            return 
+        if self.size == self.limit:
+            del self.storage[self.order.remove_from_head()[0]]
+            self.size -= 1
+        self.order.add_to_tail((key, value))
+        self.storage[key] = self.order.tail
+        self.size += 1
