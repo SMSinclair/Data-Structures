@@ -1,3 +1,10 @@
+class Node:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.prev = None
+        self.next = None
+
 class LRUCache:
     """
     Our LRUCache class keeps track of the max number of nodes it
@@ -7,8 +14,27 @@ class LRUCache:
     to every node stored in the cache.
     """
     def __init__(self, limit=10):
-        pass
+        self.limit = limit
+        self.num_nodes = 0
+        self.storage = dict()
+        self.head = Node(0,0)
+        self.tail = Node(0,0)
+        self.head.next = self.tail
+        self.tail.prev = self.head
 
+    def remove(self, node):
+        prev = node.prev
+        next = node.next
+        prev.next = next
+        next.prev = prev
+
+    def add(self, node):
+        prev = self.tail.prev
+        prev.next = node
+        self.tail.prev = node
+        node.prev = prev
+        node.next = self.tail
+        
     """
     Retrieves the value associated with the given key. Also
     needs to move the key-value pair to the end of the order
@@ -17,8 +43,12 @@ class LRUCache:
     key-value pair doesn't exist in the cache.
     """
     def get(self, key):
-        pass
-
+        if key in self.storage:
+            node = self.storage[key]
+            self.remove(node)
+            self.add(node)
+            return node.value
+        return None
     """
     Adds the given key-value pair to the cache. The newly-
     added pair should be considered the most-recently used
@@ -30,4 +60,17 @@ class LRUCache:
     the newly-specified value.
     """
     def set(self, key, value):
-        pass
+        if key in self.storage:
+            self.remove(self.storage[key])
+        node = Node(key, value)
+        self.add(node)
+        self.storage[key] = node
+        if len(self.storage) > self.limit:
+            node = self.head.next
+            self.remove(node)
+            del self.storage[node.key]
+
+# a = LRUCache()
+
+# a.set(1,2)
+# print(a.get(1))
